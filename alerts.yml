@@ -1,0 +1,44 @@
+# Alert rules. Per the Code of Conduct, replace each "Prompt used" line with the prompt
+# you actually used (or delete the line if you wrote the rule yourself).
+groups:
+  - name: captioner
+    rules:
+      - alert: CaptionerAppDown
+        # Prompt used: <paste your prompt here>
+        expr: up{job="captioner_app"} == 0
+        for: 15s
+        labels: {severity: critical}
+        annotations:
+          summary: "Captioning app metrics endpoint is down"
+
+      - alert: HighInferenceLatencyP95
+        # Prompt used: <paste your prompt here>
+        expr: histogram_quantile(0.95, sum by (le) (rate(captioner_inference_latency_seconds_bucket[1m]))) > 10
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: "p95 inference latency above 10 s"
+
+      - alert: HighImageErrorRatio
+        # Prompt used: <paste your prompt here>
+        expr: sum(rate(captioner_images_processed_total{status="error"}[1m])) / sum(rate(captioner_images_processed_total[1m])) > 0.1
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: "More than 10% of images are failing"
+
+      - alert: HighHostCPU
+        # Prompt used: <paste your prompt here>
+        expr: 100 - avg(rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100 > 85
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: "Host CPU above 85%"
+
+      - alert: HighHostMemory
+        # Prompt used: <paste your prompt here>
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 90
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: "Host memory above 90%"

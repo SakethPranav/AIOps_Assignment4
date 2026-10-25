@@ -1,0 +1,8 @@
+# Install torch separately (CPU wheel):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+streamlit
+prometheus-client
+transformers
+pillow
+psutil
+requests
